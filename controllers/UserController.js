@@ -27,19 +27,19 @@ class UserController{
         
         var {email, name, password, repassword} = req.body;
 
-        if(email == undefined){
+        if(email == undefined || email == '' || email == ' '){
             res.status(400);
             res.json({err: "email invalido"});
             return;
         }
 
-        if(name == undefined || name.length < 3){
+        if(name == undefined || name.length < 3 || name == '' || name == ' '){
             res.status(400);
             res.json({err: "Nome invalido"});
             return;
         }
 
-        if(password == undefined || password != repassword || repassword != password){
+        if(password == undefined || password != repassword || repassword != password || password == '' || password == ' '){
             res.status(400);
             res.json({err: "Senha invalido"});
             return;
@@ -65,7 +65,7 @@ class UserController{
         await User.new(email, password, name);
 
         res.status(200);
-        res.send("Pegando corpo da requisição");
+        res.send("Usuario cadastrado");
     }
 
         async edit(req, res){

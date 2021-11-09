@@ -6,7 +6,7 @@ var UserController = require("../controllers/UserController");
 var AdminAuth = require("../middleware/AdminAuth");
 
 router.get('/', HomeController.index);
-router.post('/user',AdminAuth, UserController.create);
+router.post('/user', UserController.create);
 router.get("/user",AdminAuth, UserController.index);
 router.get("/user/:id",AdminAuth, UserController.findUsers);
 router.put("/user", UserController.edit);
