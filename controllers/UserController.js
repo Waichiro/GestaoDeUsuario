@@ -40,6 +40,13 @@ class UserController{
             return;
         }
 
+        var nameExists = await User.findNome(name);
+        if(nameExists){
+            res.status(406);
+            res.json({err: "ja existe cadastro com esse nome"})
+            return;
+        }
+
         var emailExists = await User.findEmail(email);
 
         if(emailExists){
@@ -55,6 +62,26 @@ class UserController{
         res.status(200);
         res.send("Pegando corpo da requisição");
     }
+
+        async edit(req, res){
+            var {id, name, role, email} = req.body;
+            var result = await User.update(id, email, name, role);
+
+            if(result != undefined){
+                if(result.status){
+                    res.status(200);
+                    res.send("Tudo okay");
+                }else{
+                    res.status(406);
+                    res.send(result.err);
+                }
+            }else{
+                res.status(406);
+                res.send("Ocorreu um erro no servidor");
+            }
+        }
+
+
 }
 
 module.exports = new UserController();

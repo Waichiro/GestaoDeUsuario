@@ -56,6 +56,69 @@ class User{
         
     }
 
+    async findNome(name){
+        try{
+            var result = await knex.select("*").from("users").where({name: name});
+            
+            if(result.length > 0 ){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(err){
+            console.log(err);
+            return false;
+        }
+        
+    }
+
+    async update(id, email, name, role){
+
+        var user = await this.findById(id);
+        if(user != undefined){
+            
+            var editUser = {};
+
+            if(email != undefined){
+                if(email != user.email){
+                    var result = await this.findEmail(email);
+                    if(result == false){
+                        editUser.email = email;
+                    }else{
+                        return{status: false, err: "O email ja esta cadastrado"};
+                    }
+                }
+            }
+
+            if(name != undefined){
+                if(name != user.name){
+                    var result = await this.findNome(name);
+                    if(result == false){
+                        editUser.name = name;
+                    }else{
+                        return{status: false, err: "O nome ja está cadastrado"};
+                    }
+                }
+            }
+
+            if(role != undefined){
+                editUser.role = role;
+            }
+
+            try{
+                await knex.update(editUser).where({id: id}).table("users");
+                return{status: true};
+            }catch(err){
+                return{status: false, err: err};
+            }
+
+            
+
+        }else{
+            return {status: false, err: "Usuario não exite"}
+        }
+    }
+
 }
 
 module.exports = new User;
