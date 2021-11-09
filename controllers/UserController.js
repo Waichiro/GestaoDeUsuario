@@ -1,4 +1,5 @@
 var User = require("../models/User");
+var PasswordToken = require("../models/PasswordToken");
 
 class UserController{
     async index(req, res){
@@ -93,6 +94,42 @@ class UserController{
                 res.status(406);
                 res.send(result.err);
             }
+        }
+
+        async recoverPassword(req, res){
+            var email = req.body.email;
+
+            var result = await PasswordToken.create(email);
+
+            if(result.status){
+                res.status(200);
+                res.send("" + result.token);
+
+            }else{
+                res.status(406);
+                res.send(result.err);
+            }
+        }
+
+        async changePassword(req, res){
+            var token = req.body.token;
+            var password = req.body.password;
+
+            var isTokenValid = await PasswordToken.validate(token)
+        
+
+            if(isTokenValid.status){
+
+                await User.changePassword(password, isTokenValid.token.user_id, isTokenValid.token.token);
+                res.status(200);
+                res.send("Senha alterada");
+
+            }else{
+                res.status(406);
+                res.send("token invalido")
+            }
+        
+        
         }
 
 
